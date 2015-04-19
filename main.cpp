@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdio.h>
+
 #include <GL/glew.h>
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -16,6 +19,22 @@ void error_callback(int error, const char* description)
 //     //     glfwSetWindowShouldClose(window, GL_FALSE);
 // }
 
+void render(void)
+{
+
+  glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+  glClear (GL_COLOR_BUFFER_BIT);
+
+  glBegin (GL_TRIANGLES);
+  {
+    glColor3f (0.6, 0.3, 0.3);
+    glVertex2f (0, .5);
+    glVertex2f (-.5, -.5);
+    glVertex2f (.5, -.5);
+  }
+  glEnd ();
+}
+
 int main() {
 	if (!glfwInit()) {
 		fprintf(stderr, "Error: Could not start freaking GLFW\n");
@@ -31,9 +50,9 @@ int main() {
     // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-	// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow( 900, 600, "Gears", NULL, NULL );
@@ -57,20 +76,24 @@ int main() {
 	const GLubyte* version = glGetString(GL_VERSION);
 	const GLubyte* glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 	printf("Renderer: %s. Version: %s. GLSL version: %s\n", renderer, version, glslversion);
-	GLFloat point[] = {
+	GLfloat point[] = {
 		0.0f, 0.5f, 0.0f,
 		0.5f, 0.5f, 0.0f,
 		0.5f, 0.5f, 0.0f
 	};
 
-	GLuint vbo = 0;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+	// GLuint vbo = 0;
+	// glGenBuffers(1, &vbo);
+	// glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
 
-	
     while( !glfwWindowShouldClose(window) )
     {
+
+    	render();
+
+    	glfwSwapBuffers(window);
+    	sleep(1);
     	
         // Draw gears
         // draw();

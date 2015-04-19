@@ -10,6 +10,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 add_subdirectory(glfw)
 add_executable(HelloOpenGL ${SOURCE_FILES})
+include_directories(glfw/include)
 
 target_link_libraries (HelloOpenGL
 	${GLEW_LIBRARIES}
