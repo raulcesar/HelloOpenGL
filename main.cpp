@@ -164,6 +164,40 @@ GLint createShaderProgram() {
 	return shaderProgram;
 }
 
+
+
+bool _update_fps_counter(GLFWwindow* window) {
+	static double previous_seconds;
+	static int frame_count;
+	static double colorseconds = 0.0;
+
+	double current_seconds;
+	double elapsed_seconds;
+
+	current_seconds = glfwGetTime();
+	elapsed_seconds = current_seconds - previous_seconds;
+	colorseconds += elapsed_seconds;
+	
+	static bool ret = false;
+	if (elapsed_seconds > 0.25) {
+		previous_seconds = current_seconds;
+		char tmp[128];
+		double fps = (double) frame_count / elapsed_seconds;
+		sprintf(tmp, "openGL @ fps: %.2f", fps);
+		glfwSetWindowTitle(window, tmp);
+		frame_count = 0;
+		printf("seconds: %f\n", colorseconds);
+		
+	}
+	if (colorseconds > 5.0) {
+		ret = !ret;
+		colorseconds = 0.0;
+	}
+
+	frame_count ++;
+	return ret;
+}
+
 int main() {
 	if (!glfwInit()) {
 		fprintf(stderr, "Error: Could not start freaking GLFW\n");
@@ -224,13 +258,20 @@ int main() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	GLint shaderProgram = createShaderProgram();
+	GLint colorUniform = glGetUniformLocation(shaderProgram, "inputColor");
+
 	printf("ShaderProgram: %u\n", shaderProgram);
+	bool updateColor = false;
 	while ( !glfwWindowShouldClose(window) )
 	{
 
 		// render(shaderProgram);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		
 		glUseProgram(shaderProgram);
+
+
 		glBindVertexArray(vao);
 
 		//draw 3 points
@@ -238,6 +279,12 @@ int main() {
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
+		updateColor = _update_fps_counter(window);
+		if (updateColor == true) {
+			glUniform4f(colorUniform, 0.2, 0.2, 0.2, 1.0);
+		} else {
+			glUniform4f(colorUniform, 0.5, 0.0, 0.5, 1.0);
+		}
 		// sleep(1);
 
 		// Draw gears
