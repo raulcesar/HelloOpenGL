@@ -12,6 +12,9 @@ add_subdirectory(glfw)
 add_executable(HelloOpenGL ${SOURCE_FILES})
 include_directories(glfw/include)
 
+configure_file(simple.fs simple.fs COPYONLY)
+configure_file(simple.vs simple.vs COPYONLY)
+
 target_link_libraries (HelloOpenGL
 	${GLEW_LIBRARIES}
 	glfw ${GLFW_LIBRARIES}
